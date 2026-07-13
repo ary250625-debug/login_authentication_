@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,30 +13,43 @@
         <h1>Create Account</h1>
 
         <% if (error) { %>
-    <div class="error-message">
-        <%= error %>
-    </div>
-<% } %>
+            <div class="error-message">
+                <%= error %>
+            </div>
+        <% } %>
 
         <form action="/signup" method="POST">
 
+            <!-- Username -->
             <div class="form-group">
                 <label for="username">Username:</label>
-               <input
-    type="text"
-    id="username"
-    name="username"
-    placeholder="Enter your username"
-    required
-    autocomplete="off"
-    pattern="^\S+$"
-    title="Username cannot contain spaces"
-    onkeydown="return event.key !== ' '"
->
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter your username"
+                    required
+                    autocomplete="off"
+                    pattern="^\S+$"
+                    title="Username cannot contain spaces"
+                    onkeydown="return event.key !== ' '"
+                >
             </div>
 
-       
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    autocomplete="email"
+                >
+            </div>
 
+            <!-- Password -->
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input
@@ -44,9 +58,9 @@
                     name="password"
                     placeholder="Create a password"
                     required
+                    minlength="6"
                 >
             </div>
-
 
             <button type="submit">Create Account</button>
 
@@ -60,3 +74,4 @@
 
 </body>
 </html>
+```

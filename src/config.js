@@ -1,29 +1,44 @@
 const mongoose = require('mongoose');
-const connect = mongoose.connect("mongodb://localhost:27017/login-inf");
 
-// check if the connection is successful
-
-connect.then(() => {
+mongoose.connect("mongodb://localhost:27017/login-inf")
+.then(() => {
     console.log("Connected to MongoDB successfully!");
-}).catch(() => {
-    console.log("Error connecting to MongoDB:");
-});   
-
-// create a schema for the user data
-const loginSchema = mongoose.Schema({
-    name:{
-        type: String,
-        required: true      
-    },
-
-    password:{
-        type: String,
-        required: true
-    } 
-    
+})
+.catch((err) => {
+    console.log("MongoDB Connection Error:", err);
 });
 
-// collection name is login-info
-const collection = new mongoose.model("user", loginSchema);
+const loginSchema = new mongoose.Schema({
 
-module.exports = collection;    
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+    password: {
+        type: String,
+        required: true
+    },
+
+    otp: {
+        type: String,
+        default: null
+    },
+
+    otpExpiry: {
+        type: Date,
+        default: null
+    }
+
+});
+
+const collection = mongoose.model("user", loginSchema);
+
+module.exports = collection;

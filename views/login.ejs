@@ -11,6 +11,15 @@
 
 <div class ="container">
     <h1>Login</h1>
+
+<% if(error){ %>
+
+<p style="color:green;">
+    <%= error %>
+</p>
+
+<% } %>
+
     <form action="/login" method="POST">
         <div class="form-group">
             <label for="username">Username:</label>
