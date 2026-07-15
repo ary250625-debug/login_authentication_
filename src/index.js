@@ -54,10 +54,26 @@ transporter.verify((error) => {
 });
 
 // -------------------------
+// Authentication Middleware
+// -------------------------
+
+const isAuthenticated = (req, res, next) => {
+    if (req.session.userId) {
+        return next();
+    }
+
+    return res.redirect("/");
+};
+
+// -------------------------
 // GET Routes
 // -------------------------
 
 app.get("/", (req, res) => {
+    if (req.session.userId) {
+        return res.redirect("/home");
+    }
+
     res.render("login", {
         error: null
     });
@@ -75,8 +91,22 @@ app.get("/forgot-password", (req, res) => {
     });
 });
 
-app.get("/home", (req, res) => {
-    res.render("home");
+app.get("/home", isAuthenticated, (req, res) => {
+    res.set("Cache-Control", "no-store");
+    res.render("home", {
+        username: req.session.username
+    });
+});
+
+app.post("/logout", isAuthenticated, (req, res, next) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return next(err);
+        }
+
+        res.clearCookie("connect.sid");
+        return res.redirect("/");
+    });
 });
 
 // -------------------------

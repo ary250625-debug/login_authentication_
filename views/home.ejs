@@ -1,189 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your personal account dashboard">
+    <title>Home | MyApp</title>
+    <style>
+        :root {
+            --ink: #172033;
+            --muted: #667085;
+            --primary: #5b5bd6;
+            --primary-dark: #4747b8;
+            --surface: rgba(255, 255, 255, .88);
+            --line: #e7eaf0;
+            --shadow: 0 18px 45px rgba(31, 42, 68, .09);
+        }
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body{
-    background:#f5f7fb;
-}
+        body {
+            min-height: 100vh;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 5% 5%, rgba(91, 91, 214, .15), transparent 28rem),
+                radial-gradient(circle at 95% 90%, rgba(36, 178, 150, .12), transparent 28rem),
+                #f7f8fc;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
 
-/* Navbar */
+        button, a { font: inherit; }
+        a { color: inherit; text-decoration: none; }
 
-.navbar{
-    background:#2563eb;
-    color:#fff;
-    padding:18px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px max(24px, calc((100% - 1180px) / 2));
+            border-bottom: 1px solid rgba(231, 234, 240, .8);
+            background: rgba(247, 248, 252, .82);
+            backdrop-filter: blur(14px);
+        }
 
-.navbar h2{
-    font-size:28px;
-}
+        .brand { display: flex; align-items: center; gap: 11px; font-size: 20px; font-weight: 800; }
+        .brand-mark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; color: white; background: linear-gradient(135deg, #6d6de1, #4747b8); box-shadow: 0 8px 18px rgba(91,91,214,.25); }
+        .nav-actions { display: flex; align-items: center; gap: 14px; }
+        .user-chip { display: flex; align-items: center; gap: 9px; color: #475467; font-size: 14px; font-weight: 650; }
+        .avatar { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 50%; color: var(--primary-dark); background: #e9e9ff; font-weight: 800; text-transform: uppercase; }
 
-.navbar a{
-    text-decoration:none;
-    color:white;
-    background:#dc2626;
-    padding:10px 20px;
-    border-radius:8px;
-    font-weight:bold;
-}
+        .logout-button {
+            padding: 9px 15px;
+            color: #475467;
+            border: 1px solid #d9dde7;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-weight: 700;
+            transition: .2s ease;
+        }
+        .logout-button:hover { color: #b42318; border-color: #f4b4ae; background: #fff6f5; transform: translateY(-1px); }
 
-.navbar a:hover{
-    background:#b91c1c;
-}
+        main { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 58px 0 38px; }
 
-/* Hero */
+        .hero { display: grid; grid-template-columns: 1.55fr .85fr; gap: 26px; margin-bottom: 28px; }
+        .welcome, .status-card, .panel { border: 1px solid rgba(231,234,240,.9); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow); }
+        .welcome { position: relative; overflow: hidden; padding: 42px; background: linear-gradient(135deg, #25254d, #5b5bd6); color: white; }
+        .welcome::after { content: ""; position: absolute; right: -70px; bottom: -100px; width: 280px; height: 280px; border: 55px solid rgba(255,255,255,.08); border-radius: 50%; }
+        .eyebrow { margin-bottom: 13px; color: #c9c9ff; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+        .welcome h1 { position: relative; z-index: 1; max-width: 620px; margin-bottom: 13px; font-size: clamp(32px, 5vw, 50px); line-height: 1.08; letter-spacing: -.035em; }
+        .welcome p { position: relative; z-index: 1; max-width: 570px; color: #e1e1ff; font-size: 17px; line-height: 1.65; }
 
-.hero{
-    text-align:center;
-    padding:50px 20px;
-}
+        .status-card { display: flex; flex-direction: column; justify-content: space-between; padding: 30px; }
+        .status-label { color: var(--muted); font-size: 13px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
+        .status-icon { display: grid; width: 52px; height: 52px; margin: 24px 0; place-items: center; border-radius: 16px; color: #087c68; background: #dff8f1; font-size: 25px; font-weight: 900; }
+        .status-card h2 { margin-bottom: 7px; font-size: 23px; }
+        .status-card p { color: var(--muted); line-height: 1.55; }
 
-.hero h1{
-    font-size:40px;
-    color:#1f2937;
-    margin-bottom:10px;
-}
+        .section-head { display: flex; justify-content: space-between; align-items: end; margin: 34px 0 17px; }
+        .section-head h2 { font-size: 24px; letter-spacing: -.02em; }
+        .section-head p { color: var(--muted); font-size: 14px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .panel { display: flex; min-height: 210px; padding: 26px; flex-direction: column; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+        .panel:hover { transform: translateY(-4px); border-color: #d2d2fa; box-shadow: 0 22px 50px rgba(31,42,68,.13); }
+        .icon { display: grid; width: 46px; height: 46px; margin-bottom: 23px; place-items: center; border-radius: 14px; color: var(--primary); background: #eeeeff; font-size: 21px; font-weight: 800; }
+        .panel:nth-child(2) .icon { color: #b54708; background: #fff3df; }
+        .panel:nth-child(3) .icon { color: #087c68; background: #dff8f1; }
+        .panel h3 { margin-bottom: 8px; font-size: 19px; }
+        .panel p { flex: 1; color: var(--muted); font-size: 14px; line-height: 1.6; }
+        .panel-link { display: inline-flex; align-items: center; gap: 7px; width: fit-content; margin-top: 20px; color: var(--primary); font-size: 14px; font-weight: 800; }
+        .panel-link span { transition: transform .2s ease; }
+        .panel:hover .panel-link span { transform: translateX(3px); }
 
-.hero p{
-    color:#6b7280;
-    font-size:18px;
-}
+        /* Enhanced Features */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
 
-/* Cards */
+        .stat-box {
+            border: 1px solid rgba(231,234,240,.9);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            padding: 22px;
+            text-align: center;
+            transition: all .2s ease;
+        }
 
-.container{
-    width:90%;
-    max-width:1200px;
-    margin:40px auto;
-}
+        .stat-box:hover {
+            transform: translateY(-3px);
+            border-color: #d2d2fa;
+            box-shadow: 0 18px 40px rgba(91,91,214,.15);
+        }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:25px;
-}
+        .stat-number {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 10px 0;
+        }
 
-.card{
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
-    transition:.3s;
-}
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 650;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
 
-.card:hover{
-    transform:translateY(-8px);
-}
+        .activity-section {
+            border: 1px solid rgba(231,234,240,.9);
+            border-radius: 24px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            padding: 26px;
+            margin-top: 28px;
+        }
 
-.card h2{
-    margin-bottom:15px;
-    color:#2563eb;
-}
+        .activity-section h3 {
+            font-size: 19px;
+            margin-bottom: 18px;
+            color: var(--ink);
+        }
 
-.card p{
-    color:#555;
-    margin-bottom:25px;
-    line-height:1.5;
-}
+        .activity-item {
+            display: flex;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 14px;
+        }
 
-.card a{
-    display:inline-block;
-    text-decoration:none;
-    background:#2563eb;
-    color:white;
-    padding:10px 20px;
-    border-radius:8px;
-}
+        .activity-item:last-child {
+            border-bottom: none;
+        }
 
-.card a:hover{
-    background:#1d4ed8;
-}
+        .activity-icon {
+            display: grid;
+            width: 36px;
+            height: 36px;
+            place-items: center;
+            border-radius: 50%;
+            background: #e9e9ff;
+            color: var(--primary);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
 
-/* Footer */
+        .activity-content {
+            flex: 1;
+        }
 
-footer{
-    margin-top:50px;
-    text-align:center;
-    padding:20px;
-    color:#777;
-}
-</style>
+        .activity-text {
+            color: var(--ink);
+            font-weight: 650;
+            margin-bottom: 3px;
+        }
 
+        .activity-time {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-box, .panel {
+            animation: slideInUp 0.5s ease-out forwards;
+        }
+
+        .panel:nth-child(1) { animation-delay: 0.1s; }
+        .panel:nth-child(2) { animation-delay: 0.2s; }
+        .panel:nth-child(3) { animation-delay: 0.3s; }
+
+        .stat-box:nth-child(1) { animation-delay: 0.1s; }
+        .stat-box:nth-child(2) { animation-delay: 0.15s; }
+        .stat-box:nth-child(3) { animation-delay: 0.2s; }
+        .stat-box:nth-child(4) { animation-delay: 0.25s; }
+
+        footer { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 20px 0 34px; color: #98a2b3; border-top: 1px solid var(--line); font-size: 13px; text-align: center; }
+
+        @media (max-width: 850px) { .hero { grid-template-columns: 1fr; } .grid { grid-template-columns: repeat(2, 1fr); } .stats-section { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) {
+            .topbar { padding: 14px 18px; }
+            .user-chip span:not(.avatar) { display: none; }
+            main { width: min(100% - 28px, 1180px); padding-top: 30px; }
+            .welcome { padding: 30px 24px; }
+            .status-card { padding: 24px; }
+            .grid { grid-template-columns: 1fr; }
+            .section-head { align-items: start; flex-direction: column; gap: 6px; }
+            footer { width: calc(100% - 28px); }
+        }
+    </style>
 </head>
 <body>
+    <header class="topbar">
+        <a class="brand" href="/home" aria-label="MyApp home">
+            <span class="brand-mark">M</span>
+            <span>MyApp</span>
+        </a>
 
-<nav class="navbar">
-    <h2>My Dashboard</h2>
+        <div class="nav-actions">
+            <div class="user-chip">
+                <span class="avatar"><%= username ? username.charAt(0) : "U" %></span>
+                <span><%= username || "User" %></span>
+            </div>
+            <form action="/logout" method="POST">
+                <button class="logout-button" type="submit">Log out</button>
+            </form>
+        </div>
+    </header>
 
-    <a href="/">Logout</a>
-</nav>
+    <main>
+        <section class="hero" aria-labelledby="welcome-title">
+            <div class="welcome">
+                <p class="eyebrow">Personal dashboard</p>
+                <h1 id="welcome-title">Welcome back, <%= username || "User" %>.</h1>
+                <p>Your account, preferences, and important information are all together in one secure place.</p>
+            </div>
 
-<section class="hero">
-    <h1>Welcome 👋</h1>
-    <p>Select an option below to continue.</p>
-</section>
+            <aside class="status-card" aria-label="Account status">
+                <span class="status-label">Account status</span>
+                <span class="status-icon" aria-hidden="true">&#10003;</span>
+                <div>
+                    <h2>You're signed in</h2>
+                    <p>Your protected dashboard is active and your session is secure.</p>
+                </div>
+            </aside>
+        </section>
 
-<div class="container">
+        <section class="stats-section" aria-label="Account statistics">
+            <div class="stat-box">
+                <span class="stat-label">📊 Account Status</span>
+                <div class="stat-number">Active</div>
+                <p style="color: var(--muted); font-size: 12px;">All systems running</p>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">🔒 Security</span>
+                <div class="stat-number">100%</div>
+                <p style="color: var(--muted); font-size: 12px;">Fully protected</p>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">✅ Verification</span>
+                <div class="stat-number">Done</div>
+                <p style="color: var(--muted); font-size: 12px;">Email verified</p>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">⭐ Premium</span>
+                <div class="stat-number">Yes</div>
+                <p style="color: var(--muted); font-size: 12px;">Full features</p>
+            </div>
+        </section>
 
-    <div class="grid">
-
-        <div class="card">
-            <h2>👤 My Profile</h2>
-            <p>View and edit your personal information.</p>
-            <a href="#">Open</a>
+        <div class="section-head">
+            <div><h2>Quick access</h2></div>
+            <p>Everything you need, one click away</p>
         </div>
 
-        <div class="card">
-            <h2>⚙ Settings</h2>
-            <p>Update password, username and preferences.</p>
-            <a href="#">Open</a>
-        </div>
+        <section class="grid" aria-label="Dashboard shortcuts">
+            <a class="panel" href="#">
+                <span class="icon" aria-hidden="true">👤</span>
+                <h3>My profile</h3>
+                <p>Review and update your personal information and account details.</p>
+                <span class="panel-link">View profile <span>&rarr;</span></span>
+            </a>
 
-        <div class="card">
-            <h2>📁 Documents</h2>
-            <p>Manage and upload your files securely.</p>
-            <a href="#">Open</a>
-        </div>
+            <a class="panel" href="#">
+                <span class="icon" aria-hidden="true">⚙️</span>
+                <h3>Account settings</h3>
+                <p>Manage your password, privacy controls, and preferences.</p>
+                <span class="panel-link">Open settings <span>&rarr;</span></span>
+            </a>
 
-        <div class="card">
-            <h2>📊 Dashboard</h2>
-            <p>View statistics and activity.</p>
-            <a href="#">Open</a>
-        </div>
+            <a class="panel" href="#">
+                <span class="icon" aria-hidden="true">❓</span>
+                <h3>Help & support</h3>
+                <p>Find answers or get in touch when you need a helping hand.</p>
+                <span class="panel-link">Get support <span>&rarr;</span></span>
+            </a>
+        </section>
 
-        <div class="card">
-            <h2>📨 Messages</h2>
-            <p>Check notifications and messages.</p>
-            <a href="#">Open</a>
-        </div>
+        <section class="activity-section" aria-label="Recent activity">
+            <h3>📅 Recent Activity</h3>
+            <div class="activity-item">
+                <span class="activity-icon">✅</span>
+                <div class="activity-content">
+                    <div class="activity-text">Account successfully created</div>
+                    <div class="activity-time">Today at 10:30 AM</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <span class="activity-icon">🔐</span>
+                <div class="activity-content">
+                    <div class="activity-text">Password verified and secured</div>
+                    <div class="activity-time">Today at 10:20 AM</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <span class="activity-icon">📧</span>
+                <div class="activity-content">
+                    <div class="activity-text">Email address verified</div>
+                    <div class="activity-time">Today at 10:10 AM</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <span class="activity-icon">🎉</span>
+                <div class="activity-content">
+                    <div class="activity-text">Welcome to the platform!</div>
+                    <div class="activity-time">Today at 10:00 AM</div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-        <div class="card">
-            <h2>🛠 Support</h2>
-            <p>Need help? Contact our support team.</p>
-            <a href="#">Open</a>
-        </div>
-
-    </div>
-
-</div>
-
-<footer>
-    © 2026 My Application. All Rights Reserved.
-</footer>
-
+    <footer>&copy; 2026 MyApp. Your account, securely yours.</footer>
 </body>
 </html>
